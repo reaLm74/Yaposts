@@ -1,0 +1,27 @@
+#header, .module caption, .inline-group h2, div.breadcrumbs, #changelist-filter h2{
+    background-color: #90a4ae
+}
+#branding h1 a:link, #branding h1 a:visited {
+    color: #ffffff;
+}
+
+.button.default:active, input[type=submit].default:active, .button.default:focus, input[type=submit].default:focus, .button.default:hover, input[type=submit].default:hover{
+    background: #3c8da5
+}
+.button.default, input[type=submit].default, .submit-row input.default{
+       background: #90a4ae
+}
+
+
+.paginator a:focus, .paginator a:hover{
+    background: #3c8da5
+}
+
+.paginator a:link, .paginator a:visited {
+    background: #90a4ae
+}
+
+.paginator a.showall{
+    background: none;
+}
+

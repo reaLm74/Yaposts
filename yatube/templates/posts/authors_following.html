@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+{{title}}
+{% endblock %}
+
+{% block content %}
+{% load thumbnail %}
+<!-- класс py-5 создает отступы сверху и снизу блока -->
+<div class="container py-5">
+    <h1>Вы подписаны на авторов:</h1>
+    {% for user in users %}
+    <a class="btn btn-lg btn-light"
+       href="{% url 'posts:profile' user.author %}" role="button"
+    >
+        {{ user.author.get_full_name }}  </a>
+    <br><br>
+        {% endfor %}
+
+
+
+
+
+        <!-- под последним постом нет линии -->
+</div>
+{% endblock %}

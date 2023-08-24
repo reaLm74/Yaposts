@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Custom 400{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <h1>Custom 403</h1>
+       <a href="{% url 'posts:index' %}">Главная страница</a>
+</div>
+
+{% endblock %}

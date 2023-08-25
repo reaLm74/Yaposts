@@ -8,7 +8,6 @@ from .forms import PostLoadForm
 
 class PostLoad(LoginRequiredMixin, FormView):
     template_name = 'posts_load/posts_load.html'
-    model = Post
     form_class = PostLoadForm
     login_url = reverse_lazy('posts:index')
 

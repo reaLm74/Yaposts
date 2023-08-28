@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -180,8 +182,8 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-RECAPTCHA_PUBLIC_KEY = '6LfJcuEnAAAAAMUjbep_JMaISzPJ7aP09NKEJTj-'
-RECAPTCHA_PRIVATE_KEY = '6LfJcuEnAAAAAFuXw45FicW2N0Q27NP7ptvkN2U7'
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
 
 # LOGGING = {

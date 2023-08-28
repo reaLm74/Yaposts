@@ -1,12 +1,16 @@
+import logging
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from .forms import PostForm, CommentForm
 from .models import Post, Follow, Comment
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -218,6 +222,12 @@ class PostEdit(LoginRequiredMixin, UpdateView):
     pk_url_kwarg = 'post_id'
     extra_context = {'is_edit': True}
 
+    def form_valid(self, form):
+        if form.instance.author == self.request.user:
+            return super().form_valid(form)
+        logger.warning(f'Попытка изменения пользователем "{self.request.user}" чужого поста: id - {form.instance.pk}')
+        return redirect('posts:index')
+
 
 # @login_required
 # def add_comment(request, post_id):
@@ -229,6 +239,12 @@ class PostEdit(LoginRequiredMixin, UpdateView):
 #         comment.post = post
 #         comment.save()
 #     return redirect('posts:post_detail', post_id)
+
+class PostDelete(LoginRequiredMixin, DeleteView):
+    template_name = 'posts/delete_post.html'
+    model = Post
+    success_url = reverse_lazy('posts:index')
+    pk_url_kwarg = 'post_id'
 
 
 class AddComment(LoginRequiredMixin, CreateView):

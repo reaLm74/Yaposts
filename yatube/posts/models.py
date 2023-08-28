@@ -82,6 +82,9 @@ class Post(models.Model):
         # как удобную ссылку в шаблоне как метод функции
         return reverse('posts:post_detail', kwargs={'post_id': self.pk})
 
+    def get_delete_url(self):
+        return reverse('posts:delete_post', kwargs={'post_id': self.pk})
+
 
 class Comment(models.Model):
     post = models.ForeignKey(

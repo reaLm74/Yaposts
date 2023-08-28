@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'captcha',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -148,9 +149,40 @@ INTERNAL_IPS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            ['Undo', 'Redo',
+             '-', 'Bold', 'Italic', 'Underline',
+             '-', 'Link', 'Unlink', 'Anchor',
+             '-', 'Format',
+             '-', 'Maximize',
+             '-', 'Table',
+             '-', 'Image',
+             '-', 'Youtube',
+             '-', 'Source',
+             '-', 'NumberedList', 'BulletedList'
+             ],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
+             '-', 'Font', 'FontSize', 'TextColor',
+             '-', 'Outdent', 'Indent',
+             '-', 'HorizontalRule',
+             '-', 'Blockquote'
+             ]
+        ],
+        'extraPlugins': ','.join(['youtube']),
+        'height': 500,
+        'width': '100%',
+        'toolbarCanCollapse': False,
+        'forcePasteAsPlainText': True
+    }
+}
+
+RECAPTCHA_PUBLIC_KEY = '6LfJcuEnAAAAAMUjbep_JMaISzPJ7aP09NKEJTj-'
+RECAPTCHA_PRIVATE_KEY = '6LfJcuEnAAAAAFuXw45FicW2N0Q27NP7ptvkN2U7'
+
 
 # LOGGING = {
 #     'version': 1,

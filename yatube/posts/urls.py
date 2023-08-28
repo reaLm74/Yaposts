@@ -10,6 +10,7 @@ urlpatterns = [
     # path('group/<slug:slug>/', views.group_posts, name='group_list'),
     path('group/<slug:slug>/', views.GroupPosts.as_view(), name='group_list'),
     path('post_create/', views.PostCreate.as_view(), name='create_post'),
+    path('posts/<int:post_id>/delete_post/', views.PostDelete.as_view(), name='delete_post'),
     # path('profile/<str:username>/', views.profile, name='profile'),
     path('profile/<str:username>/', views.Profile.as_view(), name='profile'),
     # path('posts/<int:post_id>/', views.post_detail, name='post_detail'),

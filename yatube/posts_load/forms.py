@@ -2,4 +2,4 @@ from django import forms
 
 
 class PostLoadForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(label='')

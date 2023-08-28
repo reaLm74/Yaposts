@@ -28,6 +28,12 @@
                        href="{% url 'about:tech' %}">
                         Технологии</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if view_name  == 'about:contact' %}active{% endif %}"
+                       href="{% url 'about:contact' %}">
+                        Контакты
+                    </a>
+                </li>
                 {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link {% if view_name  == 'posts:create_post' %}active{% endif %}"
@@ -42,6 +48,8 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="{% url 'posts:authors_following'%}">Избранные авторы</a></li>
                         <li><a class="dropdown-item" href="{% url 'posts:profile' user.username %}">Мои посты</a></li>
+                        <li><a class="dropdown-item" href="{% url 'posts_load:posts_load' %}">Массовая загрузка
+                            постов</a></li>
                         <li><a class="dropdown-item" href="{% url 'users:password_reset_form' %}">Изменить пароль</a>
                         </li>
                         <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выйти</a></li>

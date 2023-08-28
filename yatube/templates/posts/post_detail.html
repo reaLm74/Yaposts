@@ -7,7 +7,7 @@
 {% block content %}
 {% load user_filters %}
 {% load thumbnail %}
-<div class="container py-5">
+<div class="container py-5" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <aside class="col-12 col-md-3">
             <ul class="list-group list-group-flush">
@@ -33,6 +33,11 @@
                         все посты пользователя
                     </a>
                 </li>
+                {% if author == user %}
+                <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">Редактировать пост</a>
+                <br>
+                <a class="btn btn-danger" href="{% url 'posts:delete_post' post.pk %}">Удалить пост</a>
+                {% endif %}
             </ul>
         </aside>
 
@@ -44,11 +49,6 @@
 
             <p>{{post.text}}</p>
 
-            {% if author == user %}
-            <ul class="nav nav-pills nav-item">
-                <a class="nav-link active" href="{% url 'posts:post_edit' post.pk %}">Редактировать пост</a>
-            </ul>
-            {% endif %}
 
             {% if user.is_authenticated %}
             <div class="card my-4">
@@ -79,7 +79,7 @@
                 </div>
             </div>
             {% endfor %}
-        </article>
+
     </div>
 </div>
 

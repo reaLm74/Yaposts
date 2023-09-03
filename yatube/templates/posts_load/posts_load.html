@@ -17,10 +17,9 @@
                 <form method="post"
                       enctype="multipart/form-data"
                       action="{% url 'posts_load:posts_load' %}">
+
                     {% csrf_token %}
-
                     {{ form.as_p }}
-
 
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary">

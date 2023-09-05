@@ -5,7 +5,6 @@
 
 {% block content %}
 {% load thumbnail %}
-<!-- класс py-5 создает отступы сверху и снизу блока -->
 <div class="container py-5">
     <h1>Вы подписаны на авторов:</h1>
     {% for user in users %}
@@ -15,11 +14,5 @@
         {{ user.author.get_full_name }}  </a>
     <br><br>
         {% endfor %}
-
-
-
-
-
-        <!-- под последним постом нет линии -->
 </div>
 {% endblock %}

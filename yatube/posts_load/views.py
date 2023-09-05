@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-from posts.models import Post
 
+from posts.models import Post
 from .forms import PostLoadForm
 
 
@@ -17,7 +17,7 @@ class PostLoad(LoginRequiredMixin, FormView):
         author = self.request.user
         for text in posts_str:
             Post.objects.create(text=text, author=author)
-        return super().form_valid(form)  # Можно сделать страницу со статусом об успешном наполнении
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('posts:index')

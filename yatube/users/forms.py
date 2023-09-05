@@ -43,6 +43,7 @@ class ProfileForm(forms.ModelForm):
             'birth_date': forms.DateInput(attrs={'class': 'form-control'}),
         }
 
+
 ExpansionCreationForm = inlineformset_factory(
     User, Profile, form=ProfileForm, fields=[
         'tel', 'location', 'birth_date'

@@ -1,7 +1,6 @@
-from django.contrib import admin
-from django.contrib.auth.models import User
 from django import forms
-from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin
+
 from .models import Profile
 
 
@@ -17,4 +16,3 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ('text',)
     empty_value_display = '-пусто-'
     list_per_page = 10
-

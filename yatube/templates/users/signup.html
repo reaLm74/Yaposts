@@ -23,7 +23,6 @@
                 {% endfor %}
                 {% endif %}
 
-
                 <form action="." method="post">
                     {% csrf_token %}
 
@@ -31,9 +30,8 @@
                     {% for field in form %}
 
                     {% if field.label == 'Пароль' %}
-
-                   {{ expansion_creation_form.as_p }}
-{% endif %}
+                    {{ expansion_creation_form.as_p }}
+                    {% endif %}
 
                     <div class="form-group row my-3">
                         <label for="{{ field.id_for_label }}">
@@ -66,7 +64,4 @@
         </div>
     </div>
 </div>
-
-
-
 {% endblock %}

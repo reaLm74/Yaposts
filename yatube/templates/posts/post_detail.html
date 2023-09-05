@@ -37,6 +37,16 @@
                 <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">Редактировать пост</a>
                 <br>
                 <a class="btn btn-danger" href="{% url 'posts:delete_post' post.pk %}">Удалить пост</a>
+                {% else %}
+                {% if button %}
+                {% if not favourite %}
+                <a class="btn btn-primary" href="{% url 'posts:post_favourite' post.pk %}">Добавить в
+                    избранное</a>
+                {% else %}
+                <a class="btn btn-primary" href="{% url 'posts:post_del_favourite' post.pk %}">Удалить из
+                    избранного</a>
+                                {% endif %}
+                                {% endif %}
                 {% endif %}
             </ul>
         </aside>

@@ -132,10 +132,15 @@ class Follow(models.Model):
 @receiver(post_save, sender=Post)
 def send_to_sub(sender, **kwargs):
     """Рассылка писем пользователям на их подписки"""
-    followers = Follow.objects.filter(user=kwargs['instance'].author).values_list('author__email')
+    followers = Follow.objects.filter(
+        user=kwargs['instance'].author
+    ).values_list('author__email')
     subject, from_email, to = 'Subject here', 'from@example.com', followers
-    text_content = f'Уведомление о новой статье автора: {kwargs["instance"].author.get_full_name()}'
-    html_content = render_to_string('posts/email.html', {'Title': 'Тестовое'})
+    text_content = f'Уведомление о новой статье автора: ' \
+                   f'{kwargs["instance"].author.get_full_name()}'
+    html_content = render_to_string(
+        'posts/email.html', {'Title': 'Тестовое'}
+    )
     msg = EmailMultiAlternatives(subject, text_content, from_email, to)
     msg.attach_alternative(html_content, "text/html")
     msg.send()

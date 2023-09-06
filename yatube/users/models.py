@@ -37,6 +37,9 @@ class Profile(models.Model):
         verbose_name_plural = 'Телефоны, адреса, даты рождений'
         ordering = ('user',)
 
+    def __str__(self):
+        return self.user.get_full_name()
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

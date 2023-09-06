@@ -9,9 +9,15 @@
             <!-- тег span используется для добавления нужных стилей отдельным участкам текста -->
             <span style="color:red">Ya</span>tube
         </a>
+        <ul class="nav nav-pills">
+            <marquee>
+                <ul>С днем рождения: {{birthday}}</ul>
+            </marquee>
+        </ul>
         <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
             <form class="d-flex" role="search" action="{% url 'posts:index' %}">
-                <input class="form-control me-2" type="search" placeholder="Поиск постов" aria-label="Search" name="search">
+                <input class="form-control me-2" type="search" placeholder="Поиск постов" aria-label="Search"
+                       name="search">
                 <button class="btn btn-outline-secondary" type="submit">Поиск</button>
             </form>
             <ul class="nav nav-pills">
@@ -69,6 +75,7 @@
         </div>
     </div>
     {% endwith %}
+
 </nav>
 
 

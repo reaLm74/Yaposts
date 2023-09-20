@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}
+Личный кабинет пользователя {{ user.get_full_name }} {{ author.last_name }}
+{% endblock %}
+
+{% block content %}
+{% load thumbnail %}
+
+<div class="container py-5">
+    <div class="mb-5">
+        <h1>Личный кабинет пользователя {{ user.get_full_name }} </h1>
+        <h3>Всего постов: {{ user.posts.all.count }} </h3>
+        <h3>Всего комментариев: {{ user.comments.all.count }} </h3>
+        {% if user.is_superuser %}
+        <h3>Статус: Администратор </h3>
+        {% else %}
+        <h3>Статус: Пользователь </h3>
+        {% endif %}
+
+    </div>
+
+
+    <article>
+        <h3>Личные данные:</h3>
+        <form action="." method="post">
+            <br>
+            Email:<br>
+           {{user.email}}<br><br>
+
+            {% csrf_token %}
+            {{form.as_p}}
+
+
+
+            <div class="col-md-6 offset-md-4">
+                <button class="btn btn-primary" type="submit">
+                    Сохранить
+                </button>
+            </div>
+
+        </form>
+    </article>
+</div>
+
+{% endblock %}

@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView
 
-from .forms import CreationForm, ExpansionCreationForm
+from .forms import CreationForm, ExpansionCreationForm, ProfileForm
 
 User = get_user_model()
 
@@ -46,5 +48,15 @@ class SignUp(CreateView):
     def form_invalid(self, form, expansion_creation_form):
         return self.render_to_response(
             self.get_context_data(
-                form=form, expansion_creation_form=expansion_creation_form
+                form=form,
+                expansion_creation_form=expansion_creation_form
             ))
+
+
+class Personal(LoginRequiredMixin, UpdateView):
+    form_class = ProfileForm
+    template_name = 'users/personal.html'
+    success_url = reverse_lazy('user:personal')
+
+    def get_object(self, **kwargs):
+        return self.request.user.profile

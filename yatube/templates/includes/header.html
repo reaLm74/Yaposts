@@ -50,6 +50,7 @@
                         <li><a class="dropdown-item" href="{% url 'posts:profile' user.username %}">Мои посты</a></li>
                         <li><a class="dropdown-item" href="{% url 'posts_load:posts_load' %}">Массовая загрузка
                             постов</a></li>
+                        <li><a class="dropdown-item" href="{% url 'users:personal'%}">Личный кабинет</a></li>
                         <li><a class="dropdown-item" href="{% url 'users:password_change_form' %}">Изменить пароль</a>
                         </li>
                         <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выйти</a></li>

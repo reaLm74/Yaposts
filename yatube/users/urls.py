@@ -63,4 +63,5 @@ urlpatterns = [
         ),
         name='password_reset_complete'
     ),
+    path('personal/', views.Personal.as_view(), name='personal'),
 ]

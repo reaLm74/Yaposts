@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -44,11 +45,16 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
     'posts_load.apps.PostsLoadConfig',
+    'drf_yasg',
     'sorl.thumbnail',
     'debug_toolbar',  # django-debug-toolbar
     'api.apps.ApiConfig',  # django api config
     'ckeditor',  # django-ckeditor
     'ckeditor_uploader',  # django-ckeditor изображения
+    'import_export',  # django-import csv excel
+    'djangoql',  # django-QLSearch
+    'rest_framework.authtoken',  # django-rest
+
 ]
 
 MIDDLEWARE = [
@@ -186,13 +192,37 @@ CKEDITOR_CONFIGS = {
 RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '10000/day',  # Лимит для UserRateThrottle
+        'anon': '1000/day',  # Лимит для AnonRateThrottle
+    },
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+}
 
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
 #     'formatters': {
 #         'verbose': {
-#             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+#             'format': '%(levelname)s %(asctime)s
+#             %(module)s %(process)d %(thread)d %(message)s'
 #         }
 #     },
 #     'handlers': {

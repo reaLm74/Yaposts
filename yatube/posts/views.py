@@ -6,9 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView, ListView, DetailView, UpdateView, DeleteView
-)
+from django.views.generic import (CreateView, ListView, DetailView, UpdateView,
+                                  DeleteView)
 
 from .forms import PostForm, CommentForm
 from .models import Post, Follow, Comment
@@ -50,7 +49,10 @@ class PostDetail(DetailView):
     pk_url_kwarg = 'post_id'  # имя id поста в urls
 
     def get_queryset(self):
-        return Post.objects.filter(pk=self.kwargs['post_id'])
+        return Post.objects.filter(
+            pk=self.kwargs['post_id'],
+            is_published=True
+        )
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -212,36 +214,41 @@ class AuthorsFollowing(LoginRequiredMixin, ListView):
         context['users'] = users
         return context
 
+    @login_required
+    def profile_follow(self, username):
+        author = get_object_or_404(User, username=username)
+        if self.user != author:
+            following = Follow.objects.filter(
+                author=author, user=self.user
+            ).exists()
+            if not following:
+                Follow.objects.create(user=self.user, author=author)
+        return redirect('posts:follow_index')
 
-@login_required
-def profile_follow(request, username):
-    author = get_object_or_404(User, username=username)
-    if request.user != author:
+    @login_required
+    def profile_unfollow(self, username):
+        author = get_object_or_404(User, username=username)
         following = Follow.objects.filter(
-            author=author, user=request.user
+            author=author, user=self.user
         ).exists()
-        if not following:
-            Follow.objects.create(user=request.user, author=author)
-    return redirect('posts:follow_index')
-
-
-@login_required
-def profile_unfollow(request, username):
-    author = get_object_or_404(User, username=username)
-    following = Follow.objects.filter(
-        author=author, user=request.user
-    ).exists()
-    if following:
-        Follow.objects.filter(
-            user=request.user, author=author
-        ).delete()
-    return redirect('posts:follow_index')
+        if following:
+            Follow.objects.filter(
+                user=self.user, author=author
+            ).delete()
+        return redirect('posts:follow_index')
 
 
 class PostsFavourite(LoginRequiredMixin, ListView):
     model = User
     template_name = 'posts/posts_favourite.html'
     context_object_name = 'posts'
+
+    @classmethod
+    def get_content(cls, post_id):
+        user = get_object_or_404(User, username=cls.user)
+        post = get_object_or_404(Post, pk=post_id)
+        favourite = user.profile.favourite.filter(pk=post_id).exists()
+        return user, post, favourite
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -250,24 +257,18 @@ class PostsFavourite(LoginRequiredMixin, ListView):
         context['posts'] = posts
         return context
 
+    @login_required
+    def post_favourite(self, post_id):
+        user, post, favourite = self.get_content(self, post_id)
+        if user != post.author and not favourite:
+            user.profile.favourite.add(post)
+            user.save()
+        return redirect('posts:post_detail', post_id)
 
-@login_required
-def post_favourite(request, post_id):
-    user = get_object_or_404(User, username=request.user)
-    post = get_object_or_404(Post, pk=post_id)
-    favourite = user.profile.favourite.filter(pk=post_id).exists()
-    if request.user != post.author and not favourite:
-        user.profile.favourite.add(post)
-        user.save()
-    return redirect('posts:post_detail', post_id)
-
-
-@login_required
-def post_del_favourite(request, post_id):
-    user = get_object_or_404(User, username=request.user)
-    post = get_object_or_404(Post, pk=post_id)
-    favourite = user.profile.favourite.filter(pk=post_id).exists()
-    if favourite:
-        user.profile.favourite.remove(post)
-        user.save()
-    return redirect('posts:post_detail', post_id)
+    @login_required
+    def post_del_favourite(self, post_id):
+        user, post, favourite = self.get_content(self, post_id)
+        if favourite:
+            user.profile.favourite.remove(post)
+            user.save()
+        return redirect('posts:post_detail', post_id)

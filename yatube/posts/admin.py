@@ -4,6 +4,9 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from djangoql.admin import DjangoQLSearchMixin
+from import_export import resources
+from import_export.admin import ImportExportMixin
 
 from .models import Post, Group
 
@@ -16,18 +19,32 @@ class PostAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Post
+        fields = ('id', 'text', 'author', 'group', 'is_published',)
+
+
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(ImportExportMixin, DjangoQLSearchMixin, admin.ModelAdmin):
     form = PostAdminForm
-    list_display = ('pk', 'text', 'pub_date', 'author', 'group', 'is_published', 'get_image', 'day_created_post')
+    list_display = (
+        'pk', 'text', 'pub_date', 'author', 'group',
+        'is_published', 'get_image', 'day_created_post'
+    )
     search_fields = ('text',)
     list_filter = ('pub_date',)
     empty_value_display = '-пусто-'
     list_editable = ('group', 'is_published')
     list_per_page = 10
-    fields = ('text', 'group', ('image', 'get_image'), 'author', 'is_published', 'pub_date',)
+    fields = (
+        'text', 'group', ('image', 'get_image'), 'author', 'is_published',
+        'pub_date',
+    )
     readonly_fields = ('get_image', 'pub_date',)
     actions = ['del_group']
+    save_as = True
+    resource_classes = (ProductResource,)
 
     @admin.display(description="Миниатюра")
     def get_image(self, obj):

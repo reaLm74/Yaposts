@@ -128,9 +128,12 @@ class Follow(models.Model):
         verbose_name='На кого подписываются'
     )
 
+    def __str__(self):
+        return f'Пользователь {self.user} подписан на автора {self.author}.'
+
 
 @receiver(post_save, sender=Post)
-def send_to_sub(sender, **kwargs):
+def send_to_sub(**kwargs):
     """Рассылка писем пользователям на их подписки"""
     followers = Follow.objects.filter(
         user=kwargs['instance'].author

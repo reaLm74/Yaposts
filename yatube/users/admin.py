@@ -7,7 +7,7 @@ from .models import Profile
 class ProfileAdminForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ('user', 'tel', 'location', 'birth_date')
 
 
 @admin.register(Profile)

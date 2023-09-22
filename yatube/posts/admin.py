@@ -16,7 +16,7 @@ class PostAdminForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ('text',)
 
 
 class ProductResource(resources.ModelResource):
@@ -72,9 +72,6 @@ class GroupAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     list_per_page = 10
 
-
-# admin.site.register(Post, PostAdmin) - заменен декоратором
-# admin.site.register(Group, GroupAdmin)
 
 admin.site.site_title = "Управление статьями"
 admin.site.site_header = "Управление статьями"

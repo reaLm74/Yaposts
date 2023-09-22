@@ -3,14 +3,14 @@ import logging
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, ListView, DetailView, UpdateView,
                                   DeleteView)
 
 from .forms import PostForm, CommentForm
-from .models import Post, Follow, Comment
+from .models import Post, Follow, Comment, Group
 
 logger = logging.getLogger(__name__)
 
@@ -36,11 +36,11 @@ class PostIndex(ListView):
                 Q(author__last_name__iregex=self.request.GET.get('search')) |
                 Q(text__iregex=self.request.GET.get('search')),
                 is_published=True
-            ).select_related('author')
+            ).select_related('author', 'group')
         else:
             return Post.objects.filter(
                 is_published=True
-            ).select_related('author')
+            ).select_related('author', 'group')
 
 
 class PostDetail(DetailView):
@@ -52,30 +52,28 @@ class PostDetail(DetailView):
         return Post.objects.filter(
             pk=self.kwargs['post_id'],
             is_published=True
-        )
+        ).select_related('author', 'group').prefetch_related(
+            Prefetch('comments', queryset=Comment.objects.all().select_related(
+                'author'
+            )))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        post = Post.objects.get(pk=self.kwargs['post_id'])
-
-        button = True
+        post = Post.objects.select_related('author').get(
+            pk=self.kwargs['post_id']
+        )
+        button = False
         favourite = False
         if self.request.user == post.author:
-            button = False
+            button = True
         if self.request.user.is_authenticated:
             favourite = self.request.user.profile.favourite.filter(
                 pk=post.id
             ).exists()
         context['button'] = button
         context['favourite'] = favourite
-
-        context['user'] = self.request.user
-        context['author'] = post.author
         context['amount'] = post.author.posts.all().count()
         context['form'] = CommentForm()
-        context['comments'] = Comment.objects.filter(
-            post=self.kwargs['post_id']
-        )
         return context
 
 
@@ -88,13 +86,15 @@ class GroupPosts(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = f"Записи сообщества {context['posts'][0].group}"
+        group = get_object_or_404(Group, slug=self.kwargs['slug'])
+        context['group'] = group
+        context['title'] = f"Записи сообщества {group}"
         return context
 
     def get_queryset(self):
         return Post.objects.filter(
             group__slug=self.kwargs['slug'], is_published=True
-        )
+        ).select_related('author', 'group')
 
 
 class Profile(ListView):
@@ -123,7 +123,9 @@ class Profile(ListView):
         return context
 
     def get_queryset(self):
-        return Post.objects.filter(author__username=self.kwargs['username'])
+        return Post.objects.filter(
+            author__username=self.kwargs['username']
+        ).select_related('author', 'group')
 
 
 class PostCreate(LoginRequiredMixin, CreateView):
@@ -193,13 +195,13 @@ class FollowIndex(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = f"Подписки"
+        context['title'] = 'Подписки на авторов'
         return context
 
     def get_queryset(self):
         return Post.objects.filter(
             author__following__user=self.request.user, is_published=True
-        )
+        ).select_related('author', 'group')
 
 
 class AuthorsFollowing(LoginRequiredMixin, ListView):
@@ -209,7 +211,8 @@ class AuthorsFollowing(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        users = Follow.objects.filter(user=self.request.user)
+        users = Follow.objects.filter(user=self.request.user).select_related(
+            'author')
         context['title'] = "Подписки на авторов"
         context['users'] = users
         return context
@@ -243,23 +246,25 @@ class PostsFavourite(LoginRequiredMixin, ListView):
     template_name = 'posts/posts_favourite.html'
     context_object_name = 'posts'
 
-    @classmethod
-    def get_content(cls, post_id):
-        user = get_object_or_404(User, username=cls.user)
+    @staticmethod
+    def get_content(self, post_id):
+        user = get_object_or_404(User, username=self.user)
         post = get_object_or_404(Post, pk=post_id)
         favourite = user.profile.favourite.filter(pk=post_id).exists()
         return user, post, favourite
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        posts = self.request.user.profile.favourite.all()
+        posts = self.request.user.profile.favourite.all().select_related(
+            'author', 'group'
+        )
         context['title'] = "Избранные посты"
         context['posts'] = posts
         return context
 
     @login_required
     def post_favourite(self, post_id):
-        user, post, favourite = self.get_content(self, post_id)
+        user, post, favourite = PostsFavourite.get_content(self, post_id)
         if user != post.author and not favourite:
             user.profile.favourite.add(post)
             user.save()
@@ -267,7 +272,7 @@ class PostsFavourite(LoginRequiredMixin, ListView):
 
     @login_required
     def post_del_favourite(self, post_id):
-        user, post, favourite = self.get_content(self, post_id)
+        user, post, favourite = PostsFavourite.get_content(self, post_id)
         if favourite:
             user.profile.favourite.remove(post)
             user.save()

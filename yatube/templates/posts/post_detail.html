@@ -1,97 +1,107 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Пост: {{post.text | truncatechars:30}}
+    Пост: {{ post.text | truncatechars:30 }}
 {% endblock %}
 
 {% block content %}
-{% load user_filters %}
-{% load thumbnail %}
-<div class="container py-5" xmlns="http://www.w3.org/1999/html">
-    <div class="row">
-        <aside class="col-12 col-md-3">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    Дата публикации: {{post.pub_date| date:'d.m.Y' }}
-                </li>
-                {% if post.group %}
-                <li class="list-group-item">
-                    Группа: {{post.group}}
-                    <a href="{% url 'posts:group_list' post.group.slug %}">
-                        все записи группы
-                    </a>
-                </li>
-                {% endif %}
-                <li class="list-group-item">
-                    Автор: {{ post.author.first_name }} {{ post.author.last_name }}
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Всего постов автора: {{ amount }}
-                </li>
-                <li class="list-group-item">
-                    <a href="{% url 'posts:profile' post.author.username %}">
-                        все посты пользователя
-                    </a>
-                </li>
-                {% if author == user %}
-                <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">Редактировать пост</a>
-                <br>
-                <a class="btn btn-danger" href="{% url 'posts:delete_post' post.pk %}">Удалить пост</a>
-                {% else %}
-                {% if button %}
-                {% if not favourite %}
-                <a class="btn btn-primary" href="{% url 'posts:post_favourite' post.pk %}">Добавить в
-                    избранное</a>
-                {% else %}
-                <a class="btn btn-primary" href="{% url 'posts:post_del_favourite' post.pk %}">Удалить из
-                    избранного</a>
-                                {% endif %}
-                                {% endif %}
-                {% endif %}
-            </ul>
-        </aside>
-
-        <article class="col-12 col-md-9">
-
-            {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-            <img class="card-img my-2" src="{{ im.url }}">
-            {% endthumbnail %}
-
-            <p>{{post.text}}</p>
-
-
-            {% if user.is_authenticated %}
-            <div class="card my-4">
-                <h5 class="card-header">Добавить комментарий:</h5>
-                <div class="card-body">
-                    <form method="post" action="{% url 'posts:add_comment' post.id %}">
-                        {% csrf_token %}
-                        <div class="form-group mb-2">
-                            {{ form.text|addclass:"form-control" }}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </form>
-                </div>
-            </div>
-            {% endif %}
-
-            {% for comment in comments %}
-            <div class="media mb-4">
-                <div class="media-body">
-                    <h5 class="mt-0">
-                        <a href="{% url 'posts:profile' comment.author.username %}">
-                            {{ comment.author.username }}
+    {% load user_filters %}
+    {% load thumbnail %}
+    <div class="container py-5" xmlns="http://www.w3.org/1999/html">
+        <div class="row">
+            <aside class="col-12 col-md-3">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        Дата публикации: {{ post.pub_date| date:'d.m.Y' }}
+                    </li>
+                    {% if post.group %}
+                        <li class="list-group-item">
+                            Группа: {{ post.group }}
+                            <a href="{% url 'posts:group_list' post.group.slug %}">
+                                все записи группы
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="list-group-item">
+                        Автор: {{ post.author.first_name }} {{ post.author.last_name }}
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Всего постов автора: {{ amount }}
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'posts:profile' post.author.username %}">
+                            все посты пользователя
                         </a>
-                    </h5>
-                    <p>
-                        {{ comment.text }}
-                    </p>
-                </div>
-            </div>
-            {% endfor %}
+                    </li>
+                    {% if user.is_authenticated %}
+                        {% if button %}
+                            <a class="btn btn-primary"
+                               href="{% url 'posts:post_edit' post.pk %}">Редактировать
+                                пост</a>
+                            <br>
+                            <a class="btn btn-danger"
+                               href="{% url 'posts:delete_post' post.pk %}">Удалить
+                                пост</a>
+                        {% else %}
 
+                            {% if not favourite %}
+                                <a class="btn btn-primary"
+                                   href="{% url 'posts:post_favourite' post.pk %}">Добавить
+                                    в
+                                    избранное</a>
+                            {% else %}
+                                <a class="btn btn-primary"
+                                   href="{% url 'posts:post_del_favourite' post.pk %}">Удалить
+                                    из
+                                    избранного</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </aside>
+
+            <article class="col-12 col-md-9">
+
+                {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                    <img class="card-img my-2" src="{{ im.url }}">
+                {% endthumbnail %}
+
+                <p>{{ post.text }}</p>
+
+
+                {% if user.is_authenticated %}
+                    <div class="card my-4">
+                        <h5 class="card-header">Добавить комментарий:</h5>
+                        <div class="card-body">
+                            <form method="post"
+                                  action="{% url 'posts:add_comment' post.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mb-2">
+                                    {{ form.text|addclass:"form-control" }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Отправить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% for comment in post.comments.all %}
+                    <div class="media mb-4">
+                        <div class="media-body">
+                            <h5 class="mt-0">
+                                <a href="{% url 'posts:profile' comment.author.username %}">
+                                    {{ comment.author.username }}
+                                </a>
+                            </h5>
+                            <p>
+                                {{ comment.text }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </article>
+        </div>
     </div>
-</div>
-
-
 {% endblock %}

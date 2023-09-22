@@ -29,6 +29,7 @@
           <option value="homework.Running.*" />
           <option value="api.versioned" />
           <option value="object.user" />
+          <option value="posts.views.AuthorsFollowing.user" />
         </list>
       </option>
     </inspection_tool>

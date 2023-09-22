@@ -14,7 +14,6 @@ class Profile(models.Model):
     )
     tel = models.CharField(
         max_length=12,
-        null=True,
         blank=True,
         verbose_name='Телефон',
     )

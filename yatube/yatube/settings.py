@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'import_export',  # django-import csv excel
     'djangoql',  # django-QLSearch
     'rest_framework.authtoken',  # django-rest
+    'bot',  # Bot
 
 ]
 

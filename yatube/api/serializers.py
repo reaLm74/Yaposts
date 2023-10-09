@@ -8,13 +8,15 @@ User = get_user_model()
 
 
 def get_related_field(many=False, read_only=True):
-    return serializers.StringRelatedField(many=many, read_only=read_only)
+    return serializers.SlugRelatedField(
+        many=many, read_only=read_only, slug_field='id'
+    )
 
 
 class PostSerializer(serializers.ModelSerializer):
     author = get_related_field()
     group = serializers.SlugRelatedField(
-        slug_field='title',
+        slug_field='slug',
         read_only=False,
         queryset=Group.objects.all(),
         default=None
@@ -22,7 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('text', 'pub_date', 'author', 'group')
+        fields = ('id', 'text', 'pub_date', 'author', 'group', 'is_published')
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -89,7 +91,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'posts')
+        fields = ('id', 'username', 'first_name', 'last_name', 'posts')
 
 
 class FavouriteSerializer(serializers.ModelSerializer):

@@ -168,9 +168,9 @@ def get_10_authors(response):
 
 
 async def select_author(call: CallbackQuery, bot: Bot):
-    url = f'http://127.0.0.1:8000/api/v1/user/'
+    url = 'http://127.0.0.1:8000/api/v1/user/'
     response = requests.get(url).json()
-    text = f'Авторы постов'
+    text = 'Авторы постов'
     markup = InlineKeyboardMarkup(inline_keyboard=get_10_authors(response))
     await call.message.edit_text(text=text, reply_markup=markup)
 
@@ -186,8 +186,8 @@ def get_10_groups(response):
 
 
 async def select_group(call: CallbackQuery, bot: Bot):
-    url = f'http://127.0.0.1:8000/api/v1/groups/'
+    url = 'http://127.0.0.1:8000/api/v1/groups/'
     response = requests.get(url).json()
-    text = f'Группы постов'
+    text = 'Группы постов'
     markup = InlineKeyboardMarkup(inline_keyboard=get_10_groups(response))
     await call.message.edit_text(text=text, reply_markup=markup)

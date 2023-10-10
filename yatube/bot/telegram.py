@@ -9,8 +9,9 @@ from dotenv import load_dotenv
 
 from bot.core.handlers.basic import get_start
 from bot.core.handlers.basic import menu
-from bot.core.handlers.callback import select_next_10_post, select_post, \
-    select_post_group, select_post_user, select_author, select_group
+from bot.core.handlers.callback import (select_next_10_post, select_post,
+                                        select_post_group, select_post_user,
+                                        select_author, select_group)
 from bot.core.utils.commands import set_command
 
 load_dotenv()
@@ -31,12 +32,9 @@ async def start():
 
     dp.startup.register(start_bot)
 
-    dp.callback_query.register(select_next_10_post,
-                               F.data.startswith('posts'))
-    dp.callback_query.register(select_next_10_post,
-                               F.data.startswith('next_'))
-    dp.callback_query.register(select_next_10_post,
-                               F.data.startswith('previous_'))
+    dp.callback_query.register(select_next_10_post, F.data.startswith(
+        ('posts', 'next_', 'previous_')
+    ))
     dp.callback_query.register(select_post,
                                F.data.startswith('post_'))
     dp.callback_query.register(select_post_user,

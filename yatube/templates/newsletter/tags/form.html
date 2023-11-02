@@ -1,0 +1,12 @@
+<form action="{% url 'newsletter:newsletter' %}" method="post">
+    <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+        {% csrf_token %}
+        {% for field in newsletter_form %}
+        {{ field.errors }}
+        {{ field }}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary mb-3">Подписаться</button>
+    </div>
+</form>
+
+

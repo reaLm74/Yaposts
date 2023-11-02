@@ -1,3 +1,14 @@
-<div class="footer-copyright text-center py-3">© {{ year }} Copyright
-    <p><span style="color:red">Ya</span>tube</p>
+{% load newsletter_tags %}
+
+<div class="container">
+    <div class="row">
+        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+            © {{ year }} Copyright
+            <p><span style="color:red">Y</span>aposts</p>
+            <div class="col-md-5 offset-md-1 mb-3">
+                <h5>Подпишитесь на нашу рассылку новостей</h5>
+            </div>
+            {% newsletter_form %}
+        </div>
+    </div>
 </div>

@@ -6,6 +6,6 @@ def validate_not_empty(value):
     if len(value) == 1:
         print('Please enter')
         raise ValidationError(
-            'А кто поле будет заполнять, Пушкин?',
+            'Кто поле будет заполнять?',
             params={'value': value}, code='invalid'
         )
